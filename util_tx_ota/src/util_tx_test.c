@@ -229,10 +229,6 @@ int main(int argc, char **argv)
                 usage();
                 return EXIT_FAILURE;
                 break;
-            case 'o':
-                i = sscanf(optarg, "%s", arg_s);
-                printf("OTA: %s", arg_s);
-                break;
 
             case 'f': /* <float> Target frequency in MHz */
                 i = sscanf(optarg, "%lf", &xd);
@@ -243,6 +239,11 @@ int main(int argc, char **argv)
                 } else {
                     f_target = (uint32_t)((xd*1e6) + 0.5); /* .5 Hz offset to get rounding instead of truncating */
                 }
+                break;
+
+            case 'o':
+                i = sscanf(optarg, "%s", arg_s);
+                printf("OTA: %s\n", arg_s);
                 break;
 
             case 'n': /* <uint> TX notch filter frequency in kHz */
