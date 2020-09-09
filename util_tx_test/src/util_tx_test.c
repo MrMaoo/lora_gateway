@@ -602,7 +602,7 @@ int main(int argc, char **argv)
     txpkt.invert_pol = invert;
     txpkt.preamble = preamb;
     txpkt.size = pl_size;
-    // 这里改成从文件读数据
+    // set payload at here
     strcpy((char *)txpkt.payload, "TEST**abcdefghijklmnopqrstuvwxyz#0123456789#ABCDEFGHIJKLMNOPQRSTUVWXYZ#0123456789#abcdefghijklmnopqrstuvwxyz#0123456789#ABCDEFGHIJKLMNOPQRSTUVWXYZ#0123456789#abcdefghijklmnopqrstuvwxyz#0123456789#ABCDEFGHIJKLMNOPQRSTUVWXYZ#0123456789#abcdefghijklmnopqrs#" ); /* abc.. is for padding */
 
     /* main loop */
