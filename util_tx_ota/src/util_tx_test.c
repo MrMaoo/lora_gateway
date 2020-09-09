@@ -38,6 +38,8 @@ Maintainer: Sylvain Miermont
 #include "loragw_reg.h"
 #include "loragw_aux.h"
 
+#include "ota.h"
+
 /* -------------------------------------------------------------------------- */
 /* --- PRIVATE MACROS ------------------------------------------------------- */
 
@@ -192,6 +194,7 @@ int main(int argc, char **argv)
     uint32_t sx1301_count_us;
     uint32_t tx_notch_freq = DEFAULT_NOTCH_FREQ;
 
+
     /* RF configuration (TX fail if RF chain is not enabled) */
     enum lgw_radio_type_e radio_type = LGW_RADIO_TYPE_NONE;
     uint8_t clocksource = 1; /* Radio B is source by default */
@@ -216,12 +219,19 @@ int main(int argc, char **argv)
         {0, 0, 0, 0}
     };
 
+    // Added by Wenliang
+    unsigned char Payload[30000];//Payload = Config prameters(16 Bytes) + Sketch Hex ( <=28672 Bytes)
+
     /* parse command line options */
-    while ((i = getopt_long (argc, argv, "hif:n:m:b:s:c:p:l:z:t:x:r:k:d:q:", long_options, &option_index)) != -1) {
+    while ((i = getopt_long (argc, argv, "hif:n:m:b:s:c:p:l:z:t:x:r:k:d:q:o:", long_options, &option_index)) != -1) {
         switch (i) {
             case 'h':
                 usage();
                 return EXIT_FAILURE;
+                break;
+            case 'o':
+                i = sscanf(optarg, "%s", arg_s);
+                printf("OTA: %s", arg_s);
                 break;
 
             case 'f': /* <float> Target frequency in MHz */
@@ -603,6 +613,7 @@ int main(int argc, char **argv)
     txpkt.preamble = preamb;
     txpkt.size = pl_size;
     // 这里改成从文件读数据
+
     strcpy((char *)txpkt.payload, "TEST**abcdefghijklmnopqrstuvwxyz#0123456789#ABCDEFGHIJKLMNOPQRSTUVWXYZ#0123456789#abcdefghijklmnopqrstuvwxyz#0123456789#ABCDEFGHIJKLMNOPQRSTUVWXYZ#0123456789#abcdefghijklmnopqrstuvwxyz#0123456789#ABCDEFGHIJKLMNOPQRSTUVWXYZ#0123456789#abcdefghijklmnopqrs#" ); /* abc.. is for padding */
 
     /* main loop */
