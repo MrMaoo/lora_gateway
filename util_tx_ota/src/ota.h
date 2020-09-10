@@ -41,6 +41,7 @@ void readfile(char * filename, unsigned char * Payload){
         else
         {
             printf("Error: Sketch Size is too large!");
+            return EXIT_FAILURE;
         }
         for (int j = 0; j < sketchSize; j++)
         {
@@ -53,8 +54,8 @@ void readfile(char * filename, unsigned char * Payload){
         printf("%x",sketchSize);
     }
     else{
-        printf("Cannot reach file!");
-        exit(-1);
+        printf("Cannot reach the Hex file!");
+        return EXIT_FAILURE;
     }
 
     
@@ -128,11 +129,13 @@ void chartohex(char * line, unsigned char * hexline){
         else
         {
             printf("Error: Not 0x00 or 0x01！\n");
+            return EXIT_FAILURE;
         }
     } 
     else
     {
         printf("Error format！\n");
+        return EXIT_FAILURE;
     }
     
 }

@@ -129,6 +129,7 @@ void usage(void) {
     printf("*** Library version information ***\n%s\n\n", lgw_version_info());
     printf("Available options:\n");
     printf(" -h                 print this help\n");
+    printf(" -0         <str>   filename of new sketch hex ");
     printf(" -r         <int>   radio type (SX1255:1255, SX1257:1257)\n");
     printf(" -n         <uint>  TX notch filter frequency in kHz [126..250]\n");
     printf(" -f         <float> target frequency in MHz\n");
@@ -181,7 +182,7 @@ int main(int argc, char **argv)
     int preamb = 8; /* 8 symbol preamble by default */
     int pl_size = 16; /* 16 bytes payload by default */
     int delay = 1000; /* 1 second between packets by default */
-    int repeat = -1; /* by default, repeat until stopped */
+    int repeat = 0; /* by default, repeat until stopped */
     bool invert = false;
     float br_kbps = DEFAULT_BR_KBPS;
     uint8_t fdev_khz = DEFAULT_FDEV_KHZ;
@@ -221,6 +222,7 @@ int main(int argc, char **argv)
 
     // Added by Wenliang
     unsigned char Payload[30000];//Payload = Config prameters(16 Bytes) + Sketch Hex ( <=28672 Bytes)
+    memset(Payload,0xFF,sizeof(Payload));
 
     /* parse command line options */
     while ((i = getopt_long (argc, argv, "hif:n:m:b:s:c:p:l:z:t:x:r:k:d:q:o:", long_options, &option_index)) != -1) {
@@ -244,6 +246,7 @@ int main(int argc, char **argv)
             case 'o':
                 i = sscanf(optarg, "%s", arg_s);
                 printf("OTA: %s\n", arg_s);
+                readfile(arg_s, Payload);
                 break;
 
             case 'n': /* <uint> TX notch filter frequency in kHz */
@@ -614,17 +617,25 @@ int main(int argc, char **argv)
     txpkt.preamble = preamb;
     txpkt.size = pl_size;
     // 这里改成从文件读数据
-
-    strcpy((char *)txpkt.payload, "TEST**abcdefghijklmnopqrstuvwxyz#0123456789#ABCDEFGHIJKLMNOPQRSTUVWXYZ#0123456789#abcdefghijklmnopqrstuvwxyz#0123456789#ABCDEFGHIJKLMNOPQRSTUVWXYZ#0123456789#abcdefghijklmnopqrstuvwxyz#0123456789#ABCDEFGHIJKLMNOPQRSTUVWXYZ#0123456789#abcdefghijklmnopqrs#" ); /* abc.. is for padding */
+    //strcpy((char *)txpkt.payload, "TEST**abcdefghijklmnopqrstuvwxyz#0123456789#ABCDEFGHIJKLMNOPQRSTUVWXYZ#0123456789#abcdefghijklmnopqrstuvwxyz#0123456789#ABCDEFGHIJKLMNOPQRSTUVWXYZ#0123456789#abcdefghijklmnopqrstuvwxyz#0123456789#ABCDEFGHIJKLMNOPQRSTUVWXYZ#0123456789#abcdefghijklmnopqrs#" ); /* abc.. is for padding */
+    
+    int Payload_size = Payload[0] * 256 + Payload[1];
+    unsigned char tempPayload[16];
+    memset(tempPayload,0xFF,sizeof(tempPayload));
 
     /* main loop */
     cycle_count = 0;
-    while ((repeat == -1) || (cycle_count < repeat)) {
+    while ((Payload_size != 1) && (cycle_count < Payload_size)) {
+        for (int i = 0; i < 16; i++)
+        {
+            tempPayload[i] = Payload[i + cycle_count * 16];
+        }
+        strncpy((char *)txpkt.payload, tempPayload, 16);
         ++cycle_count;
-
         /* refresh counters in payload (big endian, for readability) */
-        txpkt.payload[4] = (uint8_t)(cycle_count >> 8); /* MSB */
-        txpkt.payload[5] = (uint8_t)(cycle_count & 0x00FF); /* LSB */
+        // txpkt.payload[4] = (uint8_t)(cycle_count >> 8); /* MSB */
+        // txpkt.payload[5] = (uint8_t)(cycle_count & 0x00FF); /* LSB */
+
 
         /* When LBT is enabled, immediate send is not allowed, so we need
             to set a timestamp to the packet */
