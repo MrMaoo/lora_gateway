@@ -1,5 +1,95 @@
 {
+    "SX1301_conf": {
+        "lorawan_public": true,
+        "clksrc": 1, /* radio_1 provides clock to concentrator */
+        "radio_0": {
+            "enable": true,
+            "type": "SX1255",
+            "freq": 433400000,
+            "rssi_offset": -166.0,
+            "tx_enable": ture
+        },
+        "radio_1": {
+            "enable": true,
+            "type": "SX1255",
+            "freq": 434400000,
+            "rssi_offset": -166.0,
+            "tx_enable": ture
+        },
+        "chan_multiSF_0": {
+            /* Lora MAC channel, 125kHz, all SF, 434 MHz */
+            "enable": true,
+            "radio": 1,
+            "if": -400000
+        },
+        "chan_multiSF_1": {
+            /* Lora MAC channel, 125kHz, all SF, 434.2 MHz */
+            "enable": true,
+            "radio": 1,
+            "if": -200000
+        },
+        "chan_multiSF_2": {
+            /* Lora MAC channel, 125kHz, all SF, 434.4 MHz */
+            "enable": true,
+            "radio": 1,
+            "if": 0
+        },
+        "chan_multiSF_3": {
+            /* Lora MAC channel, 125kHz, all SF, 433 MHz */
+            "enable": true,
+            "radio": 0,
+            "if": -400000
+        },
+        "chan_multiSF_4": {
+            /* Lora MAC channel, 125kHz, all SF, 433.2 MHz */
+            "enable": true,
+            "radio": 0,
+            "if": -200000
+        },
+        "chan_multiSF_5": {
+            /* Lora MAC channel, 125kHz, all SF, 433.4 MHz */
+            "enable": true,
+            "radio": 0,
+            "if": 0
+        },
+        "chan_multiSF_6": {
+            /* Lora MAC channel, 125kHz, all SF, 433.6 MHz */
+            "enable": true,
+            "radio": 0,
+            "if": 200000
+        },
+        "chan_multiSF_7": {
+            /* Lora MAC channel, 125kHz, all SF, 433.8 MHz */
+            "enable": true,
+            "radio": 0,
+            "if": 400000
+        },
+        "chan_Lora_std": {
+            /* Lora MAC channel, 250kHz, SF7, 434.4 MHz */
+            "enable": true,
+            "radio": 1,
+            "if": 0,
+            "bandwidth": 125000,
+            "spread_factor": 7
+        },
+        "chan_FSK": {
+            /* FSK 50kbps channel, 868.8 MHz */
+            "enable": true,
+            "radio": 1,
+            "if": 300000,
+            "bandwidth": 125000,
+            "datarate": 50000
+        }
+    },
+    "tx_lut_0":{
+        "desc": "TX gain test",
+        "pa_gain": 3,
+        "mix_gain": 14,
+        "rf_power": 27,
+        "dig_gain": 0
+    }
     "gateway_conf": {
-        "gateway_ID": "AA555A0000000101"
+        "gateway_ID": "AA555A0000000000"
     }
 }
+
